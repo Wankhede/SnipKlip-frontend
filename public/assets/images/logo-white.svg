@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="64" viewBox="0 0 240 64" role="img" aria-labelledby="title">
+  <title id="title">SnipKlip</title>
+  <g fill="none" stroke="#0d7377" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="22" cy="20" r="7"/>
+    <circle cx="22" cy="44" r="7"/>
+    <path d="M28 25L50 46M28 39L50 18M43 25L53 25"/>
+  </g>
+  <text x="66" y="42" fill="#17212b" font-family="Inter, Public Sans, sans-serif" font-size="31" font-weight="700">SnipKlip</text>
+</svg>
