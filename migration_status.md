@@ -111,15 +111,17 @@
 | Package security | Legacy Next.js 12 tree reports 63 vulnerabilities | Production build passes; dependency upgrade remains |
 | Legal/marketing | Copy is rebranded but not legal advice | Public pages type-check and return HTTP 200 |
 
-## Local Branches (not pushed)
+## Published Branches
 
-| Branch | Purpose | Planned state |
+| Branch | Purpose | Published state |
 |---|---|---|
-| `main` | Production-ready verified migration | Final Phase F7 commit |
-| `stag` | Pre-production validation | Same verified commit |
-| `dev` | Active sandbox | Same verified commit; checked out |
+| `main` | Production-ready verified migration | Source-only clean-history snapshot |
+| `stag` | Pre-production validation | Same verified commit as `main` |
+| `prod` | Production deployment | Same verified commit as `main` |
+| `dev` | Active local sandbox | Full migration history; not published |
 
-The source `upstream` remote is retained and destination `origin` points to `Wankhede/SnipKlip-frontend`. Nothing has been pushed yet.
+The source `upstream` remote is retained and destination `origin` points to `Wankhede/SnipKlip-frontend`.
+The destination branches were published from a clean source-only snapshot because inherited upstream history contained exposed credentials blocked by GitHub Push Protection.
 
 ## Secure AI Help Assistant
 
@@ -127,6 +129,7 @@ The source `upstream` remote is retained and destination `origin` points to `Wan
 - The dedicated client sends only the question and Django JWT; salon, branch, customer, and admin context are not included.
 - Chat state stays in browser memory and is not persisted.
 - Answers render as plain text with allowlisted in-app guide links.
+- The backend assistant runs in explicit offline mode by default and does not call an external LLM.
 - The UI warns users not to submit customer details, passwords, OTPs, payment data, or administrator information.
 - Verification: TypeScript passes and the Node 18 production build generated all 92 pages successfully.
 - Backend integration: an authenticated live request returned the expected Bookings guide answer without persisting chat content.
