@@ -1,11 +1,9 @@
-import { getSession } from 'next-auth/react';
-
+import { getAccessToken } from 'utils/axios';
 import { uninterceptedAxiosServices } from 'utils/axios';
 import { HelpAssistantResponse } from 'types/help-assistant';
 
 export const askHelpAssistant = async (question: string): Promise<HelpAssistantResponse> => {
-    const session = await getSession();
-    const accessToken = session?.token?.user?.data?.access_token || session?.token?.access_token;
+    const accessToken = await getAccessToken();
 
     if (!accessToken) {
         throw new Error('Your session has expired. Please sign in again.');

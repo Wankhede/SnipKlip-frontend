@@ -3,6 +3,7 @@ const website = process.env.NEXT_PUBLIC_COMPANY_WEBSITE || 'https://snipklip.in'
 export const BRAND = {
     COMPANY_NAME: process.env.NEXT_PUBLIC_COMPANY_NAME || 'SnipKlip',
     COMPANY_WEBSITE: website,
+    PRIMARY_COLOR: '#000080',
     SUPPORT_EMAIL: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'support@snipklip.in',
     ADMIN_EMAIL: process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@snipklip.in',
     CONTACT_NUMBER: process.env.NEXT_PUBLIC_CONTACT_NUMBER || '',

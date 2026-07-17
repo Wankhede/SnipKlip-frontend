@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { getUserDetails } from 'services/user';
+import { clearAccessToken, setAccessToken } from 'utils/axios';
 
 const UserContext = createContext();
 
@@ -54,8 +55,11 @@ const UserProvider = ({ children }) => {
 
     useEffect(() => {
         if (status === 'authenticated' && session) {
+            const accessToken = session?.token?.user?.data?.access_token || session?.token?.access_token || null;
+            setAccessToken(accessToken);
             fetchData();
         } else if (status === 'unauthenticated') {
+            clearAccessToken();
             setLoading(false);
         }
     }, [session, status]);

@@ -26,7 +26,6 @@ import AnimateButton from 'components/@extended/AnimateButton';
 
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import _debounce from 'lodash/debounce';
 import { useRouter } from 'next/router';
 
 // ============================|| LOGIN ||============================ //
@@ -53,7 +52,8 @@ const AuthLogin = ({ csrfToken }: any) => {
             setCapsWarning(false);
         }
     };
-    const handleDebouncedSubmit = _debounce((values, { setErrors, setSubmitting }) => {
+
+    const handleLoginSubmit = (values: any, { setErrors, setSubmitting }: any) => {
         signIn('login', {
             redirect: false,
             email: values.username,
@@ -68,7 +68,7 @@ const AuthLogin = ({ csrfToken }: any) => {
                 setSubmitting(false);
             }
         });
-    }, 500);
+    };
 
     return (
         <>
@@ -83,7 +83,7 @@ const AuthLogin = ({ csrfToken }: any) => {
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={(values, formikBag) => {
-                    handleDebouncedSubmit(values, formikBag);
+                    handleLoginSubmit(values, formikBag);
                 }}
             >
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (

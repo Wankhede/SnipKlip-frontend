@@ -6,7 +6,6 @@ import { useTheme } from '@mui/material/styles';
 import { Box, Button, Checkbox, Grid, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
 import { EssentialMethods } from 'utils/essentialMethods';
 import { BRAND } from 'config/branding';
-import _debounce from 'lodash/debounce';
 // ==============================|| CONTACT US - FORM ||============================== //
 const initialValues = {
     name: '',
@@ -30,10 +29,9 @@ function ContactForm() {
         }));
     };
 
-    // Debounced version of the handleSubmit function
-    const debouncedSubmit = _debounce(handleSubmit, 500);
     async function handleSubmit(event: any) {
         event.preventDefault();
+        if (loading) return;
         setLoading(true);
 
         try {
@@ -60,7 +58,7 @@ function ContactForm() {
 
     return (
         <Box sx={{ p: { xs: 2.5, sm: 0 } }}>
-            <form onSubmit={debouncedSubmit}>
+            <form onSubmit={handleSubmit}>
                 <Grid container spacing={5} justifyContent="center">
                     <Grid item xs={12} sm={10} lg={9}>
                         <Stack alignItems="center" justifyContent="center" spacing={2}>

@@ -121,7 +121,7 @@ export default function Button(theme: Theme) {
             height: '100%',
             borderRadius: 4,
             opacity: 0,
-            transition: 'all 0.5s'
+            transition: 'all 0.15s'
           },
 
           '&:active::after': {

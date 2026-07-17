@@ -88,7 +88,7 @@ AnimateButton.defaultProps = {
   offset: 10,
   direction: 'right',
   scale: {
-    hover: 1.05,
-    tap: 0.95
+    hover: 1.02,
+    tap: 0.98
   }
 };

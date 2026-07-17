@@ -3,10 +3,24 @@ import { PaletteThemeProps } from 'types/theme';
 import { PalettesProps } from '@ant-design/colors';
 import { PaletteColorOptions } from '@mui/material/styles';
 
+// SnipKlip brand primary: #000080 (navy)
+const NAVY = {
+  lighter: '#E8E8F5',
+  100: '#C5C5E6',
+  200: '#9A9AD1',
+  light: '#4D4DA6',
+  400: '#1A1A99',
+  main: '#000080',
+  dark: '#000066',
+  700: '#000055',
+  darker: '#000044',
+  900: '#000033'
+} as const;
+
 // ==============================|| PRESET THEME - DEFAULT ||============================== //
 
 const Default = (colors: PalettesProps): PaletteThemeProps => {
-  const { blue, red, gold, cyan, green, grey } = colors;
+  const { red, gold, cyan, green, grey } = colors;
   const greyColors: PaletteColorOptions = {
     0: grey[0],
     50: grey[1],
@@ -30,16 +44,16 @@ const Default = (colors: PalettesProps): PaletteThemeProps => {
 
   return {
     primary: {
-      lighter: blue[0],
-      100: blue[1],
-      200: blue[2],
-      light: blue[3],
-      400: blue[4],
-      main: blue[5],
-      dark: blue[6],
-      700: blue[7],
-      darker: blue[8],
-      900: blue[9],
+      lighter: NAVY.lighter,
+      100: NAVY[100],
+      200: NAVY[200],
+      light: NAVY.light,
+      400: NAVY[400],
+      main: NAVY.main,
+      dark: NAVY.dark,
+      700: NAVY[700],
+      darker: NAVY.darker,
+      900: NAVY[900],
       contrastText
     },
     secondary: {

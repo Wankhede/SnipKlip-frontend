@@ -3,7 +3,6 @@ import axios from 'utils/axios';
 
 // types
 import { MenuProps } from 'types/menu';
-import { useSession } from 'next-auth/react';
 
 // initial state
 const initialState: MenuProps = {
@@ -18,18 +17,13 @@ const initialState: MenuProps = {
 
 // ==============================|| SLICE - MENU ||============================== //
 
-// export const fetchDashboard = createAsyncThunk('', async () => {
-//   const response = await axios.get('/api/v3/dashboard');
-//   return response;
-// });
-
-// Define your async thunk
-export const fetchDashboard = createAsyncThunk('', async () => {
-  // Fetch the dashboard data and return it
-  const { data: session } = useSession();
-  const response = await axios.get('/api/v3/dashboard'); // Replace with your data fetching code
-  return response.data;
- 
+export const fetchDashboard = createAsyncThunk('menu/fetchDashboard', async (_, { rejectWithValue }) => {
+  try {
+    const response = await axios.get('/api/v3/dashboard');
+    return response.data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
 });
 
 const menu = createSlice({
@@ -67,7 +61,7 @@ const menu = createSlice({
 
   extraReducers(builder) {
     builder.addCase(fetchDashboard.fulfilled, (state, action) => {
-      state.menuDashboard = action.payload.dashboard;
+      state.menuDashboard = action.payload?.dashboard || action.payload || {};
     });
   }
 });

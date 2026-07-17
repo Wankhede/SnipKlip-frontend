@@ -1,7 +1,6 @@
 import { Button, CircularProgress } from '@mui/material';
-import React from 'react';
+import React, { useRef } from 'react';
 import { useIntl } from 'react-intl';
-import _debounce from 'lodash/debounce';
 
 interface CustomButtonProps {
 	loading?: boolean,
@@ -12,9 +11,29 @@ interface CustomButtonProps {
 
 const CustomButton = ({loading, title, onclick, leadingIcon}: CustomButtonProps) => { 
 	const intl = useIntl();
-	const debouncedClickHandler = _debounce(onclick, 500);
+	const busyRef = useRef(false);
+
+	const handleClick = () => {
+		if (loading || busyRef.current) return;
+		busyRef.current = true;
+		try {
+			onclick();
+		} finally {
+			// Allow the next click quickly; loading prop covers longer ops.
+			window.setTimeout(() => {
+				busyRef.current = false;
+			}, 250);
+		}
+	};
+
  	return(
-	<Button onClick={debouncedClickHandler} variant="contained" component="span" startIcon={loading ? <CircularProgress color="inherit" size={20} /> : leadingIcon}>
+	<Button
+		onClick={handleClick}
+		disabled={!!loading}
+		variant="contained"
+		component="span"
+		startIcon={loading ? <CircularProgress color="inherit" size={20} /> : leadingIcon}
+	>
 		{intl.formatMessage({ id: title })}
 	</Button>
 	);

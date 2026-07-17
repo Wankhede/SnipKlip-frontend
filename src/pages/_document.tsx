@@ -5,7 +5,7 @@ export default function Document() {
     return (
         <Html>
             <Head>
-                <meta name="theme-color" content="#2296f3" />
+                <meta name="theme-color" content="#000080" />
                 <meta name="title" content={BRAND.META.title} />
                 <meta name="description" content={BRAND.META.description} />
                 <meta name="keywords" content="salon, haircuts, coloring, spa treatments, online booking, appointments" />

@@ -1,4 +1,4 @@
-import { useEffect, useState, ReactElement, ReactNode } from 'react';
+import { useEffect, ReactElement, ReactNode } from 'react';
 
 // scroll bar
 import 'simplebar/src/simplebar.css';
@@ -20,7 +20,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 // project import
 import ThemeCustomization from 'themes';
 
-import Loader from 'components/Loader';
 import Locales from 'components/Locales';
 import ScrollTop from 'components/ScrollTop';
 import RTLLayout from 'components/RTLLayout';
@@ -46,17 +45,13 @@ interface Props {
 // ==============================|| APP - THEME, ROUTER, LOCAL  ||============================== //
 export default function App({ Component, pageProps }: AppProps & Props) {
   const getLayout = Component.getLayout ?? ((page: any) => page);
+  const router = useRouter();
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [dataFetched, setDataFetched] = useState<boolean>(false);
-
+  // Prefetch menu/dashboard in the background — never block first paint.
   useEffect(() => {
-    dispatch(fetchDashboard()).then(() => {
-      setLoading(true);
-    });
+    dispatch(fetchDashboard()).catch(() => undefined);
   }, []);
 
-  const router = useRouter();
 
   const updateCurrentPage = () => {
     const current_page = router.asPath
@@ -107,7 +102,6 @@ export default function App({ Component, pageProps }: AppProps & Props) {
 
 
 
-  if (!loading) return <Loader />;
   return (
     <ReduxProvider store={store}>
       <PersistGate loading={null} persistor={persister}>
@@ -116,7 +110,7 @@ export default function App({ Component, pageProps }: AppProps & Props) {
             <RTLLayout>
               <Locales>
                 <ScrollTop>
-                  <SessionProvider session={pageProps.session} refetchInterval={0}>
+                  <SessionProvider session={pageProps.session} refetchInterval={0} refetchOnWindowFocus={false}>
                     <UserProvider>
                       <AccessControlProvider>
                         <>
