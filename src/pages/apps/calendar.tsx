@@ -4,7 +4,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Theme } from '@mui/material/styles';
 import { useMediaQuery, Box, Dialog, SpeedDial, Tooltip, Stack, Chip, Typography } from '@mui/material';
 
-// third-party
+// third-party — import core before plugins (FullCalendar v6 requirement)
+import { DateSelectArg, EventClickArg, EventDropArg } from '@fullcalendar/core';
 import FullCalendar from '@fullcalendar/react';
 import interactionPlugin, { EventResizeDoneArg } from '@fullcalendar/interaction';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
@@ -18,7 +19,6 @@ import AddEventForm from 'sections/apps/calendar/AddEventForm';
 
 import { dispatch, useSelector } from 'store';
 import { getEvents, selectEvent, selectRange, updateCalendarView, updateEvent } from 'store/reducers/calendar';
-import { DateSelectArg, EventClickArg, EventDropArg } from '@fullcalendar/core';
 
 import { PlusOutlined, TeamOutlined, CalendarOutlined } from '@ant-design/icons';
 import { listEmployee } from 'services/employees';

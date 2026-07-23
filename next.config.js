@@ -5,11 +5,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const withTM = require('next-transpile-modules')([
   '@babel/preset-react',
-  '@fullcalendar/common',
+  '@fullcalendar/core',
   '@fullcalendar/daygrid',
   '@fullcalendar/interaction',
   '@fullcalendar/list',
   '@fullcalendar/react',
+  '@fullcalendar/resource',
+  '@fullcalendar/resource-timegrid',
   '@fullcalendar/timegrid',
   '@fullcalendar/timeline',
   'react-syntax-highlighter',

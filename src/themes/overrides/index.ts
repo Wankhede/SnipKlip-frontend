@@ -103,7 +103,7 @@ export default function ComponentsOverrides(theme: Theme) {
         styleOverrides: {
           input: {
             '&.Mui-disabled': {
-              '-webkit-text-fill-color': theme.palette.mode === 'light' ? 'black' : 'white',
+              WebkitTextFillColor: theme.palette.mode === 'light' ? 'black' : 'white',
             },
           },
         },
@@ -112,7 +112,7 @@ export default function ComponentsOverrides(theme: Theme) {
         styleOverrides: {
           input: {
             '&.Mui-disabled': {
-              '-webkit-text-fill-color': theme.palette.mode === 'light' ? 'black' : 'white',
+              WebkitTextFillColor: theme.palette.mode === 'light' ? 'black' : 'white',
             },
           },
         },
@@ -120,7 +120,7 @@ export default function ComponentsOverrides(theme: Theme) {
       MuiOutlinedInput: {
         input: {
           '&.Mui-disabled': {
-            '-webkit-text-fill-color': theme.palette.mode === 'light' ? 'black' : 'white',
+            WebkitTextFillColor: theme.palette.mode === 'light' ? 'black' : 'white',
           },
         },
       },

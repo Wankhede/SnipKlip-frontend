@@ -1,9 +1,10 @@
 import axios from 'axios';
-import { backendBaseURLPath, frontendBaseURLPath } from 'config';
+import { backendBaseURLPath } from 'config';
 import { getSession, signOut } from 'next-auth/react';
 import router from 'next/router';
 
-export const axiosServicesFrontend = axios.create({ baseURL: frontendBaseURLPath });
+// Always same-origin for Next BFF routes (avoids localhost vs 127.0.0.1 CORS).
+export const axiosServicesFrontend = axios.create({ baseURL: '/' });
 
 const axiosServices = axios.create({
     baseURL: backendBaseURLPath,

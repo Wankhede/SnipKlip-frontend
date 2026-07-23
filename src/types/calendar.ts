@@ -1,10 +1,16 @@
 // third-party
-import { EventInput, EventSourceInput } from '@fullcalendar/common';
+import { EventInput } from '@fullcalendar/core';
 
 // ==============================|| CALENDAR TYPES  ||============================== //
 
 export type DateRange = { start: number | Date; end: number | Date };
-export type CalendarView = 'resourceTimeGridDay' | 'dayGridMonth' | 'timeGridWeek' | 'timeGridDay' | 'listWeek';
+export type CalendarView =
+  | 'resourceTimeGridDay'
+  | 'resourceTimeGridWeek'
+  | 'dayGridMonth'
+  | 'timeGridWeek'
+  | 'timeGridDay'
+  | 'listWeek';
 
 export type CalendarProps = {
   calendarView: CalendarView;

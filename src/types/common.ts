@@ -1,5 +1,3 @@
-import { Dictionary } from '@fullcalendar/common';
-
 export interface getTableRowsDataI {
     page_number?: string;
     page_size?: string;
@@ -77,7 +75,7 @@ export interface DownloadButtonProps {
 }
 
 export interface demoDataInterface {
-    data: Dictionary;
+    data: Record<string, unknown>;
     status: Number;
     message: string;
 }

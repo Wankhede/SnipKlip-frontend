@@ -1,5 +1,5 @@
 // third-party
-import { EventInput } from '@fullcalendar/common';
+import { EventInput } from '@fullcalendar/core';
 import { add, set, sub } from 'date-fns';
 
 // event colors - temp

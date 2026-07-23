@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 // third-party
-import { EventInput } from '@fullcalendar/common';
+import { EventInput } from '@fullcalendar/core';
 
 // project import
 import axios from 'utils/axios';
