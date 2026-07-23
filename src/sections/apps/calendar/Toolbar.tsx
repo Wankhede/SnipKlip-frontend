@@ -11,30 +11,11 @@ import { format } from 'date-fns';
 import IconButton from 'components/@extended/IconButton';
 
 // assets
-import { AppstoreOutlined, LayoutOutlined, LeftOutlined, OrderedListOutlined, PicCenterOutlined, RightOutlined } from '@ant-design/icons';
+import { LayoutOutlined, LeftOutlined, PicCenterOutlined, RightOutlined } from '@ant-design/icons';
 
-// constant
-const viewOptions = [
-  {
-    label: 'Month',
-    value: 'resourceTimeGridDay',
-    icon: AppstoreOutlined
-  },
-  {
-    label: 'Week',
-    value: 'timeGridWeek',
-    icon: LayoutOutlined
-  },
-  {
-    label: 'Day',
-    value: 'timeGridDay',
-    icon: PicCenterOutlined
-  },
-  // {
-  //   label: 'Agenda',
-  //   value: 'listWeek',
-  //   icon: OrderedListOutlined
-  // }
+const toolbarViews = [
+  { label: 'Day', value: 'resourceTimeGridDay', icon: PicCenterOutlined },
+  { label: 'Week', value: 'resourceTimeGridWeek', icon: LayoutOutlined }
 ];
 
 // ==============================|| CALENDAR - TOOLBAR ||============================== //
@@ -51,22 +32,19 @@ export interface ToolbarProps {
 
 const Toolbar = ({ date, view, onClickNext, onClickPrev, onClickToday, onChangeView, sx, ...others }: ToolbarProps) => {
   const matchDownSM = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
-
-  const [viewFilter, setViewFilter] = useState(viewOptions);
+  const [viewFilter, setViewFilter] = useState(toolbarViews);
 
   useEffect(() => {
-    if (matchDownSM) {
-      const filter = viewOptions.filter((item) => item.value !== 'dayGridMonth' && item.value !== 'timeGridWeek');
-      setViewFilter(filter);
-    } else {
-      setViewFilter(viewOptions);
-    }
+    setViewFilter(matchDownSM ? toolbarViews.filter((item) => item.value === 'resourceTimeGridDay') : toolbarViews);
   }, [matchDownSM]);
 
+  const title =
+    view === 'resourceTimeGridDay' ? format(date, 'EEE, d MMM yyyy') : format(date, 'MMMM yyyy');
+
   return (
-    <Grid alignItems="center" container justifyContent="space-between" spacing={matchDownSM ? 1 : 3} {...others} sx={{ pb: 3 }}>
+    <Grid alignItems="center" container justifyContent="space-between" spacing={matchDownSM ? 1 : 3} {...others} sx={{ pb: 3, ...sx }}>
       <Grid item>
-        <Button variant="outlined" onClick={onClickToday} size={matchDownSM ? 'small' : 'medium'}>
+        <Button variant="contained" onClick={onClickToday} size={matchDownSM ? 'small' : 'medium'}>
           Today
         </Button>
       </Grid>
@@ -75,16 +53,20 @@ const Toolbar = ({ date, view, onClickNext, onClickPrev, onClickToday, onChangeV
           <IconButton onClick={onClickPrev} size={matchDownSM ? 'small' : 'large'}>
             <LeftOutlined />
           </IconButton>
-          <Typography variant={matchDownSM ? 'h4' : 'h3'} color="textPrimary">
-            {format(date, 'MMMM yyyy')}
+          <Typography
+            variant={matchDownSM ? 'h5' : 'h3'}
+            color="textPrimary"
+            sx={{ minWidth: matchDownSM ? 140 : 220, textAlign: 'center' }}
+          >
+            {title}
           </Typography>
           <IconButton onClick={onClickNext} size={matchDownSM ? 'small' : 'large'}>
             <RightOutlined />
           </IconButton>
         </Stack>
       </Grid>
-      <Grid>
-        <ButtonGroup variant="outlined" aria-label="outlined button group">
+      <Grid item>
+        <ButtonGroup variant="outlined" aria-label="calendar view switcher">
           {viewFilter.map((viewOption) => {
             const Icon = viewOption.icon;
             return (

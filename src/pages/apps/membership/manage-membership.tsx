@@ -40,22 +40,23 @@ import AddMembership from './add-membership';
 import { useUserProfile } from '../user-provider';
 import { BookingC } from 'models/booking';
 import { title } from 'process';
+import useListRefresh from 'hooks/useListRefresh';
 // ==============================|| REACT TABLE ||============================== //
 
 const MembershipList = () => {
     const theme = useTheme();
     const router = useRouter();
+    const { refreshKey, bumpRefresh } = useListRefresh('/apps/membership/manage-membership');
     const { data: session } = useSession();
     const [id, setId] = useState<any>(null);
     const [accessibility, setAccessibility] = useState(true);
     const [title, setTitle] = useState('Add Membership')
     const paginationData = { pageIndex: 0, pageSize: 10 } // Here pageSize means row count.
     const [openDrawer, setOpenDrawer] = useState<boolean>(false);
-    const [refreshData, setRefreshData] = useState<number>(0);
     const handleDrawerOpen = () => {
         setOpenDrawer((prevState) => !prevState);
         if (openDrawer)
-            setRefreshData(Date.now());
+            bumpRefresh();
     };
 
     const { userData, loading } = useUserProfile();
@@ -170,8 +171,9 @@ const MembershipList = () => {
                 {!loading && userData && (
                     <ScrollX>
                         <AddMembership open={openDrawer} accessibility={accessibility} handleDrawerOpen={handleDrawerOpen} title={title} id={id} />
-                        <CustomTable key={refreshData} columns={columns} updateTableValues={updateTableRows} editable={false} paginationData={paginationData} columnResize={true} rowSelection={true} getTableRows={getTableRows} addButton={AddButton} filename='membership.csv'
+                        <CustomTable columns={columns} updateTableValues={updateTableRows} editable={false} paginationData={paginationData} columnResize={true} rowSelection={true} getTableRows={getTableRows} addButton={AddButton} filename='membership.csv'
                             searchColumns={Object.getOwnPropertyNames(new BookingC)}
+                            refreshKey={refreshKey}
                         />
 
                     </ScrollX>

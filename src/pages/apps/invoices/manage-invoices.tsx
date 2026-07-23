@@ -32,11 +32,13 @@ import { useUserProfile } from '../user-provider';
 import { errorColor, successColor } from 'config';
 import { EssentialMethods } from 'utils/essentialMethods';
 import { ExpenseC } from 'models/expense';
+import useListRefresh from 'hooks/useListRefresh';
 
 
 const InvoiceList = () => {
     const theme = useTheme();
     const router = useRouter();
+    const { refreshKey } = useListRefresh('/apps/invoices/manage-invoices');
     const paginationData = { pageIndex: 0, pageSize: 10 } // Here pageSize means row count.
     const { data: session } = useSession();
     const { userData, loading } = useUserProfile();
@@ -211,7 +213,7 @@ const InvoiceList = () => {
             <MainCard content={false}>
                 {!loading && userData && (
                     <ScrollX>
-                        <CustomTable columns={columns} paginationData={paginationData} getTableRows={getTableRows} addButton={AddButton} searchColumns={Object.getOwnPropertyNames(new ExpenseC)} />
+                        <CustomTable columns={columns} paginationData={paginationData} getTableRows={getTableRows} addButton={AddButton} searchColumns={Object.getOwnPropertyNames(new ExpenseC)} refreshKey={refreshKey} />
                     </ScrollX>
                 )}
             </MainCard>

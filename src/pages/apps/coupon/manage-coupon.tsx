@@ -40,22 +40,23 @@ import AddCoupon from './add-coupon';
 import NumberFormat from 'react-number-format';
 import { useUserProfile } from '../user-provider';
 import { EmployeeC } from 'models/employee';
+import useListRefresh from 'hooks/useListRefresh';
 // ==============================|| REACT TABLE ||============================== //
 
 const CouponList = () => {
     const theme = useTheme();
     const router = useRouter();
+    const { refreshKey, bumpRefresh } = useListRefresh('/apps/coupon/manage-coupon');
     const { data: session } = useSession();
     const [id, setId] = useState<any>(null);
     const [accessibility, setAccessibility] = useState(true);
     const [title, setTitle] = useState('Add Coupon')
     const paginationData = { pageIndex: 0, pageSize: 10 } // Here pageSize means row count.
     const [openDrawer, setOpenDrawer] = useState<boolean>(false);
-    const [refreshData, setRefreshData] = useState<number>(0);
     const handleDrawerOpen = () => {
         setOpenDrawer((prevState) => !prevState);
         if (openDrawer)
-            setRefreshData(Date.now());
+            bumpRefresh();
     };
 
 
@@ -183,8 +184,9 @@ const CouponList = () => {
                     {!loading && userData && (
                         <>
                             <AddCoupon open={openDrawer} accessibility={accessibility} handleDrawerOpen={handleDrawerOpen} title={title} id={id} />
-                            <CustomTable key={refreshData} columns={columns} updateTableValues={updateTableRows} editable={false} paginationData={paginationData} columnResize={true} rowSelection={true} getTableRows={getTableRows} addButton={AddButton} filename='coupons.csv'
+                            <CustomTable columns={columns} updateTableValues={updateTableRows} editable={false} paginationData={paginationData} columnResize={true} rowSelection={true} getTableRows={getTableRows} addButton={AddButton} filename='coupons.csv'
                                 searchColumns={Object.getOwnPropertyNames(new EmployeeC)}
+                                refreshKey={refreshKey}
                             />
                         </>
                     )}

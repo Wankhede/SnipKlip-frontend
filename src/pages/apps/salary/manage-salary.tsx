@@ -33,6 +33,7 @@ import { useSession } from 'next-auth/react';
 import { listSalary } from 'services/salary';
 import { useUserProfile } from '../user-provider';
 import { BookingC } from 'models/booking';
+import useListRefresh from 'hooks/useListRefresh';
 
 // assets
 
@@ -41,6 +42,7 @@ import { BookingC } from 'models/booking';
 const SalaryList = () => {
     const theme = useTheme();
     const router = useRouter();
+    const { refreshKey } = useListRefresh('/apps/salary/manage-salary');
     const paginationData = { pageIndex: 0, pageSize: 10 }
     const { userData, loading } = useUserProfile();
     const BulkUploadButton =
@@ -180,6 +182,7 @@ const SalaryList = () => {
                     <ScrollX>
                         <CustomTable columns={columns} paginationData={paginationData} updateTableValues={updateTableRows} editable={false} getTableRows={getTableRows} bulkUploadButton={BulkUploadButton} filename='employees.csv'
                             searchColumns={Object.getOwnPropertyNames(new BookingC)}
+                            refreshKey={refreshKey}
                         />
                     </ScrollX>
                 )}

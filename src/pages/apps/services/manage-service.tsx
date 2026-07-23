@@ -38,12 +38,14 @@ import { apps } from 'data/apps';
 import NumberFormat from 'react-number-format';
 import { useUserProfile } from '../user-provider';
 import { ExpenseC } from 'models/expense';
+import useListRefresh from 'hooks/useListRefresh';
 
 // ==============================|| EXPESNE - MANAGE ||============================== //
 
 const LSPTenderMappingList = () => {
     const theme = useTheme();
     const router = useRouter();
+    const { refreshKey } = useListRefresh('/apps/services/manage-service');
     const paginationData = { pageIndex: 0, pageSize: 10 }
     const { userData, loading } = useUserProfile();
     const demo_account = localStorage.getItem('demo_account');
@@ -145,6 +147,7 @@ const LSPTenderMappingList = () => {
                     <ScrollX>
                         <CustomTable columns={columns} updateTableValues={updateTableRows} editable={false} paginationData={paginationData} columnResize={true} rowSelection={true} getTableRows={getTableRows} addButton={AddButton} filename='expenses.csv'
                             searchColumns={Object.getOwnPropertyNames(new ExpenseC)}
+                            refreshKey={refreshKey}
                         />
                     </ScrollX>
                 )}

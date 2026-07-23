@@ -67,7 +67,7 @@ const AddNewProduct = (props: any) => {
             if (response && response.data.status === 200) {
                 setIsSubmitting(true);
                 EssentialMethods.showSnackbar(response.data.message, successColor)
-                handleCancel();
+                router.push('/apps/e-commerce/product/manage-product');
             } else {
                 setIsSubmitting(false);
                 EssentialMethods.showSnackbar(response.data.message, errorColor)

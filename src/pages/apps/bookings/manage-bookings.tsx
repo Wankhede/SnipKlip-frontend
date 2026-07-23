@@ -31,12 +31,14 @@ import AlertBookingDelete from './delete-booking';
 import NumberFormat from 'react-number-format';
 import { useUserProfile } from '../user-provider';
 import { BookingC } from 'models/booking';
+import useListRefresh from 'hooks/useListRefresh';
 
 // ==============================|| MANAGE BOOKING ||============================== //
 
 const BookingList = () => {
     const theme = useTheme();
     const router = useRouter();
+    const { refreshKey, bumpRefresh } = useListRefresh('/apps/bookings/manage-bookings');
     const paginationData = { pageIndex: 0, pageSize: 10 };
     const { data: session } = useSession();
     const [open, setOpen] = useState<boolean>(false);
@@ -47,9 +49,8 @@ const BookingList = () => {
     const demo_account = localStorage.getItem('demo_account');
     const demoAccount = demo_account === 'true' ? true : false;
     const tableRefresh = () => {
-        setRefresh(refresh + 1);
+        bumpRefresh();
     };
-    const [refresh, setRefresh] = useState(0);
     const handleClose = () => {
         setOpen(!open);
     };
@@ -241,7 +242,6 @@ const BookingList = () => {
                 {!loading && userData && (
                     <ScrollX>
                         <CustomTable
-                            key={refresh}
                             columns={columns}
                             paginationData={paginationData}
                             updateTableValues={updateTableRows}
@@ -250,6 +250,7 @@ const BookingList = () => {
                             addButton={AddButton}
                             filename="Bookings.csv"
                             searchColumns={Object.getOwnPropertyNames(new BookingC)}
+                            refreshKey={refreshKey}
                         />
                         <AlertBookingDelete title={bookingDeleteId} open={open} handleClose={handleClose} tableRefresh={tableRefresh} />
                         <AlertBookingAvail title={bookingId} open={availopen} handleClose={handleCloseAvail} tableRefresh={tableRefresh} />

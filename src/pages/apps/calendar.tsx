@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 // material-ui
 import { Theme } from '@mui/material/styles';
-import { useMediaQuery, Box, Dialog, SpeedDial, Tooltip } from '@mui/material';
+import { useMediaQuery, Box, Dialog, SpeedDial, Tooltip, Stack, Chip, Typography } from '@mui/material';
 
 // third-party
 import FullCalendar from '@fullcalendar/react';
-import { EventResizeDoneArg } from '@fullcalendar/interaction';
+import interactionPlugin, { EventResizeDoneArg } from '@fullcalendar/interaction';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
+
 // project import
 import Page from 'components/Page';
 import { PopupTransition } from 'components/@extended/Transitions';
@@ -19,13 +20,25 @@ import { dispatch, useSelector } from 'store';
 import { getEvents, selectEvent, selectRange, updateCalendarView, updateEvent } from 'store/reducers/calendar';
 import { DateSelectArg, EventClickArg, EventDropArg } from '@fullcalendar/core';
 
-// types
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, TeamOutlined, CalendarOutlined } from '@ant-design/icons';
 import { listEmployee } from 'services/employees';
 import { useSession } from 'next-auth/react';
 import { useUserProfile } from './user-provider';
 import { useRouter } from 'next/router';
-import { getStaff } from 'services/metadata';
+import { getApiListData } from 'utils/api-list';
+
+const EVENT_PALETTE = ['#0B6E4F', '#1B4F72', '#9A3412', '#6D28D9', '#0E7490', '#B45309'];
+
+function staffDisplayName(item: any) {
+  return (
+    item?.name ||
+    item?.user_name ||
+    [item?.first_name, item?.last_name].filter(Boolean).join(' ').trim() ||
+    item?.customer_name ||
+    item?.username ||
+    `Staff ${item?.id ?? ''}`
+  );
+}
 
 // ==============================|| CALENDAR - MAIN ||============================== //
 
@@ -45,116 +58,86 @@ const Calendar = () => {
   const { data: session } = useSession();
   const { userData, loading } = useUserProfile();
   const router = useRouter();
-  const fetchData = async () => {
-    let metadata;
-    if (userData && userData.branch_id) {
-      listEmployee({ ...userData, status: 'Active' }).then(response => {
-        // Extract customer names from the response
-        if (response && response.data) {
-          metadata = response.data.data.rows.map((item: any) => ({
-            id: item.id,
-            title: item.customer_name,
-          }));
-        } else {
-          metadata = []
-        }
-        // Set the resources to the metadata array
-        setResources(metadata);
-        const calendarEl = calendarRef.current;
 
-        // Render the calendar
-        calendarEl &&
-          (calendarEl as any).getApi().setOption('resources', metadata);
-
-        // Clean up when the component unmounts
-        return () => {
-          const calendarApi = (calendarEl as any).getApi();
-          const newView = matchDownSM ? 'listWeek' : 'resourceTimeGridDay';
-          calendarApi.changeView(newView);
-          dispatch(updateCalendarView(newView));
-          calendarApi && calendarApi.destroy();
-        };
-      });
+  const loadStaffResources = useCallback(async () => {
+    if (!userData?.branch_id) return;
+    try {
+      const response = await listEmployee({ ...userData, status: 'Active' });
+      const list = getApiListData(response);
+      const metadata = (list?.rows || []).map((item: any, index: number) => ({
+        id: String(item.id),
+        title: staffDisplayName(item),
+        eventColor: EVENT_PALETTE[index % EVENT_PALETTE.length]
+      }));
+      setResources(metadata);
+      const api = calendarRef.current?.getApi();
+      api?.setOption('resources', metadata);
+    } catch (error) {
+      console.error('Failed to load calendar staff resources', error);
+      setResources([]);
     }
-  }
+  }, [userData]);
+
+  const loadEvents = useCallback(() => {
+    if (!userData || !session) return;
+    dispatch(getEvents(userData));
+  }, [userData, session]);
+
   useEffect(() => {
     if (!loading && userData) {
-      fetchData();
+      loadStaffResources();
+      loadEvents();
     }
-  }, [loading, userData, matchDownSM]);
+  }, [loading, userData, session, loadStaffResources, loadEvents]);
 
-  const fetchDataEvents = async () => {
-    dispatch(getEvents(userData));
-  }
   useEffect(() => {
-    if (!loading && userData && session) {
-      fetchDataEvents();
-      // dispatch(
-      //   openSnackbar({
-      //     open: true,
-      //     anchorOrigin: { vertical: 'top', horizontal: 'center' },
-      //     message: '👀 Unlock exclusive benefits! Sign up for a personalized journey.',
-      //     close: false,
-      //     actionButton: false
-      //   })
-      // )
-    }
-  }, [loading, userData, session]);
+    const onFocus = () => loadEvents();
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, [loadEvents]);
 
-  // calendar toolbar events
+  useEffect(() => {
+    const preferred = matchDownSM ? 'resourceTimeGridDay' : calendarView || 'resourceTimeGridWeek';
+    const api = calendarRef.current?.getApi();
+    if (api && preferred !== calendarView) {
+      api.changeView(preferred);
+      dispatch(updateCalendarView(preferred));
+    }
+  }, [matchDownSM]);
+
   const handleDateToday = () => {
-    const calendarEl = calendarRef.current;
-
-    if (calendarEl) {
-      const calendarApi = calendarEl.getApi();
-
-      calendarApi.today();
-      setDate(calendarApi.getDate());
-    }
+    const calendarApi = calendarRef.current?.getApi();
+    if (!calendarApi) return;
+    calendarApi.today();
+    setDate(calendarApi.getDate());
   };
 
   const handleViewChange = (newView: string) => {
-    const calendarEl = calendarRef.current;
-
-    if (calendarEl) {
-      const calendarApi = calendarEl.getApi();
-
-      calendarApi.changeView(newView);
-      dispatch(updateCalendarView(newView));
-    }
+    const calendarApi = calendarRef.current?.getApi();
+    if (!calendarApi) return;
+    calendarApi.changeView(newView);
+    dispatch(updateCalendarView(newView));
+    setDate(calendarApi.getDate());
   };
 
   const handleDatePrev = () => {
-    const calendarEl = calendarRef.current;
-
-    if (calendarEl) {
-      const calendarApi = calendarEl.getApi();
-
-      calendarApi.prev();
-      setDate(calendarApi.getDate());
-    }
+    const calendarApi = calendarRef.current?.getApi();
+    if (!calendarApi) return;
+    calendarApi.prev();
+    setDate(calendarApi.getDate());
   };
 
   const handleDateNext = () => {
-    const calendarEl = calendarRef.current;
-
-    if (calendarEl) {
-      const calendarApi = calendarEl.getApi();
-
-      calendarApi.next();
-      setDate(calendarApi.getDate());
-    }
+    const calendarApi = calendarRef.current?.getApi();
+    if (!calendarApi) return;
+    calendarApi.next();
+    setDate(calendarApi.getDate());
   };
 
-  // calendar events
   const handleRangeSelect = (arg: DateSelectArg) => {
-    const calendarEl = calendarRef.current;
-    if (calendarEl) {
-      const calendarApi = calendarEl.getApi();
-      calendarApi.unselect();
-    }
-
+    calendarRef.current?.getApi()?.unselect();
     dispatch(selectRange(arg.start, arg.end));
+    router.push('/apps/bookings/add-bookings');
   };
 
   const handleEventSelect = (arg: EventClickArg) => {
@@ -176,13 +159,41 @@ const Calendar = () => {
   };
 
   const handleModal = () => {
-    // dispatch(toggleModal());
-    router.push('/apps/bookings/add-bookings')
+    router.push('/apps/bookings/add-bookings');
   };
+
+  const coloredEvents = (events || []).map((event: any, index: number) => ({
+    ...event,
+    backgroundColor: event.backgroundColor || EVENT_PALETTE[index % EVENT_PALETTE.length],
+    borderColor: event.borderColor || event.backgroundColor || EVENT_PALETTE[index % EVENT_PALETTE.length]
+  }));
 
   return (
     <Page title="Calendar">
       <Box sx={{ position: 'relative' }}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={1.5}
+          alignItems={{ xs: 'flex-start', sm: 'center' }}
+          justifyContent="space-between"
+          sx={{ mb: 2 }}
+        >
+          <Stack spacing={0.5}>
+            <Typography variant="h4" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <CalendarOutlined /> Schedule
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Staff timeline · 30-minute slots · live bookings
+            </Typography>
+          </Stack>
+          <Chip
+            icon={<TeamOutlined />}
+            label={`${resources.length} stylist${resources.length === 1 ? '' : 's'}`}
+            color="primary"
+            variant="outlined"
+          />
+        </Stack>
+
         <CalendarStyled>
           <Toolbar
             date={date}
@@ -197,29 +208,38 @@ const Calendar = () => {
             editable
             droppable
             selectable
-            events={events}
+            events={coloredEvents}
+            resources={resources}
             ref={calendarRef}
             rerenderDelay={10}
             initialDate={date}
-            initialView={calendarView}
-            dayMaxEventRows={3}
+            initialView={calendarView || 'resourceTimeGridWeek'}
+            dayMaxEventRows={4}
             eventDisplay="block"
             headerToolbar={false}
             nowIndicator
             slotMinTime="08:00:00"
-            slotMaxTime="23:00:00"
+            slotMaxTime="22:00:00"
+            slotDuration="00:30:00"
+            slotLabelInterval="01:00:00"
+            scrollTime="09:00:00"
+            allDaySlot={false}
             allDayMaintainDuration
             eventResizableFromStart
             select={handleRangeSelect}
-            // eventDrop={handleEventUpdate}
+            eventDrop={handleEventUpdate}
             eventClick={handleEventSelect}
-            // eventResize={handleEventUpdate}
-            height={matchDownSM ? 'auto' : 720}
-            plugins={[resourceTimeGridPlugin]}
+            eventResize={handleEventUpdate}
+            height={matchDownSM ? 'auto' : 760}
+            expandRows
+            stickyHeaderDates
+            plugins={[resourceTimeGridPlugin, interactionPlugin]}
+            resourceOrder="title"
+            eventTimeFormat={{ hour: 'numeric', minute: '2-digit', meridiem: 'short' }}
+            slotLabelFormat={{ hour: 'numeric', minute: '2-digit', meridiem: 'short' }}
           />
         </CalendarStyled>
 
-        {/* Dialog renders its body even if not open */}
         <Dialog
           maxWidth="sm"
           TransitionComponent={PopupTransition}

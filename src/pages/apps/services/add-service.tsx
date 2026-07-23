@@ -68,7 +68,7 @@ const AddService = (props: any) => {
             if (response && response.data.status === 200) {
                 setIsSubmitting(true);
                 EssentialMethods.showSnackbar(response.data.message, successColor)
-                handleCancel();
+                router.push('/apps/services/manage-service');
             } else {
                 setIsSubmitting(false);
                 EssentialMethods.showSnackbar(response.data.message, errorColor)

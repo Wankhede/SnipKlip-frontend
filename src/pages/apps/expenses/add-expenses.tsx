@@ -64,7 +64,7 @@ const AddExpense = (props: any) => {
             if (response && response.data.status === 200) {
                 setIsSubmitting(true);
                 EssentialMethods.showSnackbar(response.data.message, successColor)
-                handleCancel();
+                router.push('/apps/expenses/manage-expenses');
             } else {
                 setIsSubmitting(false);
                 EssentialMethods.showSnackbar(response.data.message, errorColor)

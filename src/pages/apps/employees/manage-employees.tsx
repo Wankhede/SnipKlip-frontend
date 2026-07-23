@@ -37,12 +37,14 @@ import { apps } from 'data/apps';
 import { useSession } from 'next-auth/react';
 import { useUserProfile } from '../user-provider';
 import { EmployeeC } from 'models/employee';
+import useListRefresh from 'hooks/useListRefresh';
 
 // ==============================|| EMPLOYEE - MANAGE ||============================== //
 
 const EmployeeList = () => {
     const theme = useTheme();
     const router = useRouter();
+    const { refreshKey } = useListRefresh('/apps/employees/manage-employees');
     const { data: session } = useSession();
     const paginationData = { pageIndex: 0, pageSize: 10 }
     const { userData, loading } = useUserProfile();
@@ -189,6 +191,7 @@ const EmployeeList = () => {
                     <ScrollX>
                         <CustomTable columns={columns} paginationData={paginationData} updateTableValues={updateTableRows} editable={false} getTableRows={getTableRows} addButton={AddButton} filename='employees.csv'
                             searchColumns={Object.getOwnPropertyNames(new EmployeeC)}
+                            refreshKey={refreshKey}
                         />
                     </ScrollX>
                 )}

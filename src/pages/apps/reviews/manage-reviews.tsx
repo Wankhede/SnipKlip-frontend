@@ -31,12 +31,14 @@ import { Review } from 'types/reviews';
 import { EssentialMethods } from 'utils/essentialMethods';
 import { useUserProfile } from '../user-provider';
 import { BookingC } from 'models/booking';
+import useListRefresh from 'hooks/useListRefresh';
 
 // ==============================|| EXPESNE - MANAGE ||============================== //
 
 const ReviewList = () => {
     const theme = useTheme();
     const router = useRouter();
+    const { refreshKey } = useListRefresh('/apps/reviews/manage-reviews');
     const paginationData = { pageIndex: 0, pageSize: 10 }
     const { userData, loading } = useUserProfile();
     const demo_account = localStorage.getItem('demo_account');
@@ -168,6 +170,7 @@ const ReviewList = () => {
                     <ScrollX>
                         <CustomTable columns={columns} updateTableValues={updateTableRows} editable={false} paginationData={paginationData} columnResize={true} rowSelection={true} getTableRows={getTableRows} filename='expenses.csv'
                             searchColumns={Object.getOwnPropertyNames(new BookingC)}
+                            refreshKey={refreshKey}
                         />
                     </ScrollX>
                 )}

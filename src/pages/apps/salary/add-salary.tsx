@@ -84,7 +84,7 @@ const AddSalary = (props: any) => {
             if (response.data.status === 200) {
                 setIsSubmitting(true);
                 EssentialMethods.showSnackbar(response.data.message, successColor)
-                handleCancel();
+                router.push('/apps/salary/manage-salary');
             } else {
                 setIsSubmitting(false);
                 EssentialMethods.showSnackbar(response.data.message, errorColor)

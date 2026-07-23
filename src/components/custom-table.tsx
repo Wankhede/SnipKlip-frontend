@@ -89,6 +89,8 @@ interface CustomTablePropsI {
 	filename?: string
 	searchColumns: string[]
 	prependRow?: any
+	/** Bump to force a refetch (e.g. after create/edit on another route). */
+	refreshKey?: number | string
 }
 
 const getFilterValue = (state: { filters: { value: string }[] }, globalFilterValue: string) => {
@@ -111,7 +113,7 @@ const getFilterColumn = (state: { filters: { id: string }[] }, searchColumns: st
 	}
 };
 
-function CustomTable({ columns, paginationData, getTableRows, addButton, bulkUploadButton, paginateData = true, top, editable = false, rowSelection = true, nonEditableColumns = [], updateTableValues = () => { }, hiddenColumns = [], columnResize = false, filename, searchColumns = [], prependRow }: CustomTablePropsI) {
+function CustomTable({ columns, paginationData, getTableRows, addButton, bulkUploadButton, paginateData = true, top, editable = false, rowSelection = true, nonEditableColumns = [], updateTableValues = () => { }, hiddenColumns = [], columnResize = false, filename, searchColumns = [], prependRow, refreshKey = 0 }: CustomTablePropsI) {
 	const theme = useTheme()
 
 	const [rowDetails, setRowDetails] = useState<{}[]>([])
@@ -262,35 +264,53 @@ function CustomTable({ columns, paginationData, getTableRows, addButton, bulkUpl
 	);
 
 	useEffect(() => {
+		// Wait until tenant context is ready so list APIs get real salon/branch ids.
+		if (loading) {
+			return;
+		}
+		let cancelled = false;
 		setLoading(true);
-		if (!loading) {
-			(async () => {
-				try {
-					const response = await getTableRows({
-						page_number: state.pageIndex.toString(),
-						page_size: state.pageSize.toString(),
-						search_value: getFilterValue(state, globalFilterValue),
-						search_columns: getFilterColumn(state, searchColumns.toString(), globalFilterValue),
-						sort_by: 'ASC'
-					});
-					const list = getApiListData(response);
-					if (list) {
-						setRowDetails(list.rows);
-						setRowCount(list.count);
-					} else {
-						setRowDetails([]);
-						setRowCount(0);
-					}
-				} catch (error) {
+		(async () => {
+			try {
+				const response = await getTableRows({
+					page_number: state.pageIndex.toString(),
+					page_size: state.pageSize.toString(),
+					search_value: getFilterValue(state, globalFilterValue),
+					search_columns: getFilterColumn(state, searchColumns.toString(), globalFilterValue),
+					sort_by: 'ASC'
+				});
+				if (cancelled) return;
+				const list = getApiListData(response);
+				if (list) {
+					setRowDetails(list.rows);
+					setRowCount(list.count);
+				} else {
+					setRowDetails([]);
+					setRowCount(0);
+				}
+			} catch (error) {
+				if (!cancelled) {
 					console.error('Error loading table rows:', error);
 					setRowDetails([]);
 					setRowCount(0);
-				} finally {
-					setLoading(false);
 				}
-			})();
-		}
-	}, [state.pageIndex, state.pageSize, globalFilterValue, state.filters])
+			} finally {
+				if (!cancelled) setLoading(false);
+			}
+		})();
+		return () => {
+			cancelled = true;
+		};
+	}, [
+		state.pageIndex,
+		state.pageSize,
+		globalFilterValue,
+		state.filters,
+		loading,
+		userData?.branch_id,
+		userData?.salon_id,
+		refreshKey
+	])
 
 	useEffect(() => {
 		setSelectedRows((preValue) => _.uniqBy(preValue.concat(selectedFlatRows), 'id'));

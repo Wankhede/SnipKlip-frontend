@@ -10,7 +10,7 @@ import { dispatch } from 'store';
 // types
 import { CalendarProps } from 'types/calendar';
 const initialState: CalendarProps = {
-  calendarView: 'resourceTimeGridDay',
+  calendarView: 'resourceTimeGridWeek',
   error: false,
   events: [],
   isLoader: false,

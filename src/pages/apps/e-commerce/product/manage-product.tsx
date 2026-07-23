@@ -40,11 +40,13 @@ import { errorColor } from 'config';
 import { useUserProfile } from 'pages/apps/user-provider';
 import { ProductC } from 'models/product';
 import ScrollX from 'components/ScrollX';
+import useListRefresh from 'hooks/useListRefresh';
 // ==============================|| REACT TABLE ||============================== //
 
 const ProductList = () => {
     const theme = useTheme();
     const router = useRouter();
+    const { refreshKey } = useListRefresh('/apps/e-commerce/product/manage-product');
     const { data: session } = useSession();
     const paginationData = { pageIndex: 0, pageSize: 10 } // Here pageSize means row count.
     const [openDrawer, setOpenDrawer] = useState<boolean>(false);
@@ -190,6 +192,7 @@ const ProductList = () => {
                     <ScrollX>
                         <CustomTable columns={columns} updateTableValues={updateTableRows} editable={false} paginationData={paginationData} columnResize={true} rowSelection={true} getTableRows={getTableRows} addButton={AddButton} filename='products.csv'
                             searchColumns={Object.getOwnPropertyNames(new ProductC)}
+                            refreshKey={refreshKey}
                         />
                     </ScrollX>
                 )}

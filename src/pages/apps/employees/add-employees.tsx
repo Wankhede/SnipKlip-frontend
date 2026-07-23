@@ -123,7 +123,7 @@ const AddEmployee = (props: any) => {
             if (response.data.status === 200) {
                 setIsSubmitting(true);
                 EssentialMethods.showSnackbar(response.data.message, successColor);
-                handleCancel();
+                router.push('/apps/employees/manage-employees');
             } else {
                 setIsSubmitting(false);
                 EssentialMethods.showSnackbar(response.data.message, errorColor);

@@ -30,10 +30,12 @@ import AddCustomer from './add-customer';
 import { useRouter } from 'next/router';
 import { useUserProfile } from '../user-provider';
 import { CustomerC } from 'models/customer';
+import useListRefresh from 'hooks/useListRefresh';
 // ==============================|| REACT TABLE ||============================== //
 
 const CustomerList = () => {
     const theme = useTheme();
+    const { refreshKey, bumpRefresh } = useListRefresh('/apps/customers/manage-customers');
     const paginationData = { pageIndex: 0, pageSize: 10 }; // Here pageSize means row count.
     const [add, setAdd] = useState<boolean>(false);
     const [createdCustomer, setCreatedCustomer] = useState<Customer | null>(null);
@@ -41,6 +43,10 @@ const CustomerList = () => {
     const { userData, loading } = useUserProfile();
     const handleAdd = () => {
         setAdd(!add);
+    };
+    const handleCustomerSaved = (customer: Customer) => {
+        setCreatedCustomer(customer);
+        bumpRefresh();
     };
     const BulkUploadButton = (
         <>
@@ -174,6 +180,7 @@ const CustomerList = () => {
                                 filename="customers.csv"
                                 searchColumns={Object.getOwnPropertyNames(new CustomerC())}
                                 prependRow={createdCustomer}
+                                refreshKey={refreshKey}
                             />
                         </ScrollX>
                         <Dialog
@@ -187,7 +194,7 @@ const CustomerList = () => {
                             aria-describedby="alert-dialog-slide-description"
                         >
                             {add && (
-                                <AddCustomer accessibility={true} handleCancel={handleAdd} title="View Form" onSaved={setCreatedCustomer} />
+                                <AddCustomer accessibility={true} handleCancel={handleAdd} title="View Form" onSaved={handleCustomerSaved} />
                             )}
                         </Dialog>
                     </>
