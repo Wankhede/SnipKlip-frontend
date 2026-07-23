@@ -7,8 +7,13 @@ import { IntlProvider, MessageFormatElement } from 'react-intl';
 // project import
 import useConfig from 'hooks/useConfig';
 import { I18n } from 'types/config';
+import enMessages from 'utils/locales/en.json';
 
-// load locales files
+type MessageCatalog = Record<string, string> | Record<string, MessageFormatElement[]>;
+
+const SUPPORTED_LOCALES: I18n[] = ['en', 'fr', 'ro', 'zh', 'mr', 'te', 'ta', 'hi'];
+
+// load locales files (always merge over English so missing keys never blank the UI)
 const loadLocaleData = (locale: I18n) => {
   switch (locale) {
     case 'fr':
@@ -31,6 +36,13 @@ const loadLocaleData = (locale: I18n) => {
   }
 };
 
+const normalizeLocale = (locale: string | undefined | null): I18n => {
+  if (locale && (SUPPORTED_LOCALES as string[]).includes(locale)) {
+    return locale as I18n;
+  }
+  return 'en';
+};
+
 // ==============================|| LOCALIZATION ||============================== //
 
 interface Props {
@@ -39,23 +51,41 @@ interface Props {
 
 const Locales = ({ children }: Props) => {
   const { i18n } = useConfig();
+  const locale = normalizeLocale(i18n);
 
-  const [messages, setMessages] = useState<Record<string, string> | Record<string, MessageFormatElement[]> | undefined>();
+  // Seed with English so the app never unmounts during async locale swaps
+  const [messages, setMessages] = useState<MessageCatalog>(enMessages as MessageCatalog);
 
   useEffect(() => {
-    loadLocaleData(i18n).then((d: { default: Record<string, string> | Record<string, MessageFormatElement[]> | undefined }) => {
-      setMessages(d.default);
-    });
-  }, [i18n]);
+    let cancelled = false;
+    loadLocaleData(locale)
+      .then((d: { default: MessageCatalog | undefined }) => {
+        if (cancelled) return;
+        const loaded = d?.default || {};
+        // English fallback prevents missing-key / incomplete-catalog crashes & blank labels
+        setMessages({ ...(enMessages as MessageCatalog), ...loaded } as MessageCatalog);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setMessages(enMessages as MessageCatalog);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [locale]);
 
   return (
-    <>
-      {messages && (
-        <IntlProvider locale={i18n} defaultLocale="en" messages={messages}>
-          {children as React.ReactElement}
-        </IntlProvider>
-      )}
-    </>
+    <IntlProvider
+      locale={locale}
+      defaultLocale="en"
+      messages={messages}
+      onError={() => {
+        /* Missing / malformed messages must not crash the tree during language switches */
+      }}
+    >
+      {children as React.ReactElement}
+    </IntlProvider>
   );
 };
 

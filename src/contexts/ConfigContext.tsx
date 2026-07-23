@@ -28,61 +28,74 @@ type ConfigProviderProps = {
   children: ReactNode;
 };
 
+const SUPPORTED_I18N: I18n[] = ['en', 'fr', 'ro', 'zh', 'mr', 'te', 'ta', 'hi'];
+
+function sanitizeConfig(raw: CustomizationProps): CustomizationProps {
+  const i18n = SUPPORTED_I18N.includes(raw?.i18n) ? raw.i18n : defaultConfig.i18n;
+  return {
+    ...defaultConfig,
+    ...raw,
+    i18n
+  };
+}
+
 function ConfigProvider({ children }: ConfigProviderProps) {
   const [config, setConfig] = useLocalStorage('SnipKlip-react-next-ts-config', initialState);
+  const safeConfig = sanitizeConfig(config);
 
   const onChangeContainer = () => {
     setConfig({
-      ...config,
-      container: !config.container
+      ...safeConfig,
+      container: !safeConfig.container
     });
   };
 
   const onChangeLocalization = (lang: I18n) => {
+    const nextLang = SUPPORTED_I18N.includes(lang) ? lang : 'en';
     setConfig({
-      ...config,
-      i18n: lang
+      ...safeConfig,
+      i18n: nextLang
     });
   };
 
   const onChangeMode = (mode: ThemeMode) => {
     setConfig({
-      ...config,
+      ...safeConfig,
       mode
     });
   };
 
   const onChangePresetColor = (theme: PresetColor) => {
     setConfig({
-      ...config,
+      ...safeConfig,
       presetColor: theme
     });
   };
 
   const onChangeDirection = (direction: ThemeDirection) => {
     setConfig({
-      ...config,
+      ...safeConfig,
       themeDirection: direction
     });
   };
 
   const onChangeMiniDrawer = (miniDrawer: boolean) => {
     setConfig({
-      ...config,
+      ...safeConfig,
       miniDrawer
     });
   };
 
   const onChangeMenuOrientation = (layout: MenuOrientation) => {
     setConfig({
-      ...config,
+      ...safeConfig,
       menuOrientation: layout
     });
   };
 
   const onChangeFontFamily = (fontFamily: FontFamily) => {
     setConfig({
-      ...config,
+      ...safeConfig,
       fontFamily
     });
   };
@@ -90,7 +103,7 @@ function ConfigProvider({ children }: ConfigProviderProps) {
   return (
     <ConfigContext.Provider
       value={{
-        ...config,
+        ...safeConfig,
         onChangeContainer,
         onChangeLocalization,
         onChangeMode,

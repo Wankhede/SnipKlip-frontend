@@ -103,18 +103,22 @@ const Localization = () => {
                   }}
                 >
                   {IndianLanguages.map((language) => (
-                  <ListItemButton selected={i18n === language.code} onClick={() => handleListItemClick(language.code)}>
-                    <ListItemText
-                      primary={
-                        <Grid container>
-                          <Typography color="textPrimary">{language.name}</Typography>
-                          <Typography variant="caption" color="textSecondary" sx={{ ml: '8px' }}>
-                            India
-                          </Typography>
-                        </Grid>
-                      }
-                    />
-                  </ListItemButton>
+                    <ListItemButton
+                      key={language.code}
+                      selected={i18n === language.code}
+                      onClick={() => handleListItemClick(language.code)}
+                    >
+                      <ListItemText
+                        primary={
+                          <Grid container>
+                            <Typography color="textPrimary">{language.name}</Typography>
+                            <Typography variant="caption" color="textSecondary" sx={{ ml: '8px' }}>
+                              India
+                            </Typography>
+                          </Grid>
+                        }
+                      />
+                    </ListItemButton>
                   ))}
                 </List>
               </ClickAwayListener>

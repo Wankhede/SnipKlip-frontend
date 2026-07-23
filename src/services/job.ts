@@ -19,7 +19,7 @@ export const listJob = async (queryParams: any) => {
 export const deleteJob = (jobId: any) => {
   return axiosServices({
     method: 'POST',
-    url: `/api/v3/delete-product/${jobId}/`,
+    url: `/api/v3/delete-job/${jobId}/`,
   });
 };
 
