@@ -40,7 +40,7 @@ function sanitizeConfig(raw: CustomizationProps): CustomizationProps {
 }
 
 function ConfigProvider({ children }: ConfigProviderProps) {
-  const [config, setConfig] = useLocalStorage('SnipKlip-react-next-ts-config', initialState);
+  const [config, setConfig] = useLocalStorage('SnipKlip-react-next-ts-config-v2', initialState);
   const safeConfig = sanitizeConfig(config);
 
   const onChangeContainer = () => {

@@ -2,24 +2,39 @@
 import { PaletteThemeProps } from 'types/theme';
 import { PalettesProps } from '@ant-design/colors';
 import { PaletteColorOptions } from '@mui/material/styles';
+import { ThemeMode } from 'types/config';
 
-// SnipKlip brand primary: #000080 (navy)
-const NAVY = {
-  lighter: '#E8E8F5',
-  100: '#C5C5E6',
-  200: '#9A9AD1',
-  light: '#4D4DA6',
-  400: '#1A1A99',
-  main: '#000080',
-  dark: '#000066',
-  700: '#000055',
-  darker: '#000044',
-  900: '#000033'
-} as const;
+// SnipKlip default — ink + teal (matches landing)
+// Accent: #63c7bd · Main: #0d7377 · Ink: #0A1628
+const TEAL_LIGHT = [
+  '#eef7f6', // lighter
+  '#c9ebe6', // 100
+  '#9ad9d3', // 200
+  '#63c7bd', // light
+  '#3aafa6', // 400
+  '#0d7377', // main
+  '#0a5f62', // dark
+  '#084a4c', // 700
+  '#0A1628', // darker (ink)
+  '#071018' // 900
+];
 
-// ==============================|| PRESET THEME - DEFAULT ||============================== //
+const TEAL_DARK = [
+  '#122426', // lighter
+  '#163336', // 100
+  '#1a4548', // 200
+  '#1f5c5f', // light
+  '#2a7a7d', // 400
+  '#63c7bd', // main (brighter on dark UI)
+  '#4fb5ab', // dark
+  '#3a9a92', // 700
+  '#2a7a74', // darker
+  '#c9ebe6' // 900
+];
 
-const Default = (colors: PalettesProps): PaletteThemeProps => {
+// ==============================|| PRESET THEME - DEFAULT (SNIPKLIP TEAL) ||============================== //
+
+const Default = (colors: PalettesProps, mode: ThemeMode = 'light'): PaletteThemeProps => {
   const { red, gold, cyan, green, grey } = colors;
   const greyColors: PaletteColorOptions = {
     0: grey[0],
@@ -41,19 +56,32 @@ const Default = (colors: PalettesProps): PaletteThemeProps => {
     A800: grey[16]
   };
   const contrastText = '#fff';
+  const primaryColors = mode === 'dark' ? TEAL_DARK : TEAL_LIGHT;
+
+  let errorColors = [red[0], red[2], red[4], red[7], red[9]];
+  let warningColors = [gold[0], gold[3], gold[5], gold[7], gold[9]];
+  let infoColors = [cyan[0], cyan[3], cyan[5], cyan[7], cyan[9]];
+  let successColors = [green[0], green[3], green[5], green[7], green[9]];
+
+  if (mode === 'dark') {
+    errorColors = ['#321d1d', '#7d2e28', '#d13c31', '#e66859', '#f8baaf'];
+    warningColors = ['#342c1a', '#836611', '#dda705', '#e9bf28', '#f8e577'];
+    infoColors = ['#1a2628', '#11595f', '#058e98', '#1ea6aa', '#64cfcb'];
+    successColors = ['#1a2721', '#115c36', '#05934c', '#1da65d', '#61ca8b'];
+  }
 
   return {
     primary: {
-      lighter: NAVY.lighter,
-      100: NAVY[100],
-      200: NAVY[200],
-      light: NAVY.light,
-      400: NAVY[400],
-      main: NAVY.main,
-      dark: NAVY.dark,
-      700: NAVY[700],
-      darker: NAVY.darker,
-      900: NAVY[900],
+      lighter: primaryColors[0],
+      100: primaryColors[1],
+      200: primaryColors[2],
+      light: primaryColors[3],
+      400: primaryColors[4],
+      main: primaryColors[5],
+      dark: primaryColors[6],
+      700: primaryColors[7],
+      darker: primaryColors[8],
+      900: primaryColors[9],
       contrastText
     },
     secondary: {
@@ -73,35 +101,35 @@ const Default = (colors: PalettesProps): PaletteThemeProps => {
       contrastText: greyColors[0]
     },
     error: {
-      lighter: red[0],
-      light: red[2],
-      main: red[4],
-      dark: red[7],
-      darker: red[9],
+      lighter: errorColors[0],
+      light: errorColors[1],
+      main: errorColors[2],
+      dark: errorColors[3],
+      darker: errorColors[4],
       contrastText
     },
     warning: {
-      lighter: gold[0],
-      light: gold[3],
-      main: gold[5],
-      dark: gold[7],
-      darker: gold[9],
+      lighter: warningColors[0],
+      light: warningColors[1],
+      main: warningColors[2],
+      dark: warningColors[3],
+      darker: warningColors[4],
       contrastText: greyColors[100]
     },
     info: {
-      lighter: cyan[0],
-      light: cyan[3],
-      main: cyan[5],
-      dark: cyan[7],
-      darker: cyan[9],
+      lighter: infoColors[0],
+      light: infoColors[1],
+      main: infoColors[2],
+      dark: infoColors[3],
+      darker: infoColors[4],
       contrastText
     },
     success: {
-      lighter: green[0],
-      light: green[3],
-      main: green[5],
-      dark: green[7],
-      darker: green[9],
+      lighter: successColors[0],
+      light: successColors[1],
+      main: successColors[2],
+      dark: successColors[3],
+      darker: successColors[4],
       contrastText
     },
     grey: greyColors

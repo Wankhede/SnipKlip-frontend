@@ -135,17 +135,36 @@ const TestimonialBlock = () => {
                             <Grid item sm={10} md={6}>
                                 <Grid container spacing={1} justifyContent="center">
                                     <Grid item xs={12}>
-                                        <Typography variant="subtitle1" color="primary">
-                                            Testament
+                                        <Typography
+                                            sx={{
+                                                fontFamily: '"Outfit", sans-serif',
+                                                fontWeight: 700,
+                                                letterSpacing: '0.12em',
+                                                textTransform: 'uppercase',
+                                                fontSize: '0.75rem',
+                                                color: '#0d7377',
+                                                mb: 1
+                                            }}
+                                        >
+                                            Love notes
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <Typography variant="h2">Customers Voice</Typography>
+                                        <Typography
+                                            component="h2"
+                                            sx={{
+                                                fontFamily: '"Fraunces", Georgia, serif',
+                                                fontWeight: 600,
+                                                fontSize: { xs: '2rem', md: '2.5rem' },
+                                                color: '#0A1628'
+                                            }}
+                                        >
+                                            Salons already humming on {BRAND.COMPANY_NAME}
+                                        </Typography>
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <Typography variant="body1">
-                                            We have proven records in salon management system with an average 4.9/5 ratings. We are glad to
-                                            show such a warm reveiws from our loyal customers.
+                                        <Typography sx={{ fontFamily: '"Outfit", sans-serif', color: 'text.secondary' }}>
+                                            Average 4.9/5 from owners who swapped spreadsheets for a floor that just… flows.
                                         </Typography>
                                     </Grid>
                                 </Grid>

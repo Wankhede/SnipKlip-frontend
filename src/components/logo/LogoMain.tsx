@@ -6,11 +6,20 @@ import { BRAND } from 'config/branding';
 
 // ==============================|| LOGO SVG ||============================== //
 
-const LogoMain = ({ reverse, ...others }: { reverse?: boolean }) => {
-    const theme = useTheme();
-    return (
-        <Image src={theme.palette.mode === 'dark' ? logoDark : logo} alt={BRAND.COMPANY_NAME} width="118" height="35" objectFit="none" />
-    );
+const LogoMain = ({ reverse }: { reverse?: boolean }) => {
+  const theme = useTheme();
+  // logoDark = white wordmark (for dark surfaces); logo = dark wordmark (for light surfaces)
+  const useLightMark = reverse || theme.palette.mode === 'dark';
+
+  return (
+    <Image
+      src={useLightMark ? logoDark : logo}
+      alt={BRAND.COMPANY_NAME}
+      width={118}
+      height={35}
+      objectFit="contain"
+    />
+  );
 };
 
 export default LogoMain;

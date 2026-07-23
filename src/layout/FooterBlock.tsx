@@ -92,14 +92,16 @@ const FooterBlock = ({ isFull }: showProps) => {
                 >
                     <CardMedia
                         component="img"
-                        image={`assets/images/landing/img-footer-default.png`}
+                        image={`/assets/images/landing/feature-analytics-reports.jpg`}
                         sx={{
                             display: { xs: 'none', md: 'block' },
-                            width: '55%',
-                            maxWidth: 700,
+                            width: '48%',
+                            maxWidth: 640,
                             position: 'absolute',
-                            top: '-28%',
-                            right: 0,
+                            top: '-18%',
+                            right: '2%',
+                            borderRadius: 2,
+                            boxShadow: '0 24px 64px rgba(0,0,0,0.35)',
                             ...(theme.direction === 'rtl' && {
                                 transform: 'scaleX(-1)',
                                 float: 'none'

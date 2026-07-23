@@ -35,7 +35,7 @@ const Theme = (colors: PalettesProps, presetColor: PresetColor, mode: ThemeMode)
     case 'theme8':
       return Theme8(colors, mode);
     default:
-      return Default(colors);
+      return Default(colors, mode);
   }
 };
 

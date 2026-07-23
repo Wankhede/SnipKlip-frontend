@@ -87,13 +87,7 @@ const Header = ({ handleDrawerOpen, layout, csrfToken, ...others }: Props) => {
                 <Container disableGutters={matchDownMd}>
                     <Toolbar sx={{ px: { xs: 1.5, md: 0, lg: 0 }, py: 2 }}>
                         <Stack direction="row" sx={{ flexGrow: 1, display: { xs: 'none', md: 'block' } }} alignItems="center">
-                            <Typography component="div" sx={{ textAlign: 'left', display: 'inline-block' }}>
-                                {/* <Logo reverse to="/" /> */}
-                                <Typography variant="h5" sx={{ fontWeight: 400, color: theme.palette.common.white }}>
-                                    {BRAND.COMPANY_NAME}
-                                </Typography>
-                                {/* TODO : Alex  */}
-                            </Typography>
+                            <Logo reverse to="/" />
                         </Stack>
                         <Stack
                             direction="row"
@@ -132,9 +126,11 @@ const Header = ({ handleDrawerOpen, layout, csrfToken, ...others }: Props) => {
                             </Link>
                             <Box sx={{ display: 'inline-block' }}>
                                 <AnimateButton>
-                                    <Button component={Link} href="/register" disableElevation color="primary" variant="contained">
-                                        Register a Salon
-                                    </Button>
+                                    <NextLink href="/register" passHref>
+                                        <Button component="a" disableElevation color="primary" variant="contained">
+                                            Register a Salon
+                                        </Button>
+                                    </NextLink>
                                 </AnimateButton>
                             </Box>
                             {/* <Box sx={{ display: 'inline-block' }}>
@@ -159,12 +155,7 @@ const Header = ({ handleDrawerOpen, layout, csrfToken, ...others }: Props) => {
                                 display: { xs: 'flex', md: 'none' }
                             }}
                         >
-                            <Typography component="div" sx={{ textAlign: 'left', display: 'inline-block' }}>
-                                {/* <Logo reverse to="/" /> */}
-                                <Typography variant="h5" sx={{ fontWeight: 400, color: theme.palette.common.white }}>
-                                    {BRAND.COMPANY_NAME}
-                                </Typography>
-                            </Typography>
+                            <Logo reverse to="/" />
                             <Stack direction="row" spacing={2}>
                                 {layout === 'component' && (
                                     <NextLink href={APP_DEFAULT_PATH} passHref>
