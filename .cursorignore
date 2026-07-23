@@ -1,0 +1,14 @@
+node_modules/
+.next/
+out/
+build/
+dist/
+coverage/
+.idea/
+.DS_Store
+*.log
+.env
+.env.local
+.env.*.local
+public/uploads/
+public/media/
