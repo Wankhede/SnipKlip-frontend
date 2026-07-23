@@ -10,6 +10,7 @@ import { openSnackbar } from 'store/reducers/snackbar';
 
 import { getService } from 'services/services';
 import AddService from '../add-service';
+import { getApiFirstRow } from 'utils/api-list';
 
 function ViewService() {
     const [apiResponse, setApiResponse] = useState(null);
@@ -32,9 +33,10 @@ function ViewService() {
     useEffect(() => {
         getService('id', id!.toString())
             .then(response => {
-                setApiResponse({ ...response.data.data.rows[0] });
+                const row = getApiFirstRow(response);
+                if (row) setApiResponse({ ...row });
 
-                var snackbarType = response.data.status ? 'success' : 'error';
+                var snackbarType = response.data.status === 200 ? 'success' : 'error';
 
                 showSnackbar(true, response.data.message, 'alert', snackbarType, false);
             })

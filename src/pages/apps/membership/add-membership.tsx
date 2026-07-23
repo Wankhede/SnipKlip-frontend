@@ -30,6 +30,7 @@ import { Membership } from 'types/membership';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { addMembership, editMembership, getMembership } from 'services/membership';
+import { getApiFirstRow } from 'utils/api-list';
 import { EssentialMethods } from 'utils/essentialMethods';
 import { errorColor, successColor } from 'config';
 import { getCustomers } from 'services/metadata';
@@ -68,7 +69,8 @@ const AddMembership = (props: any) => {
         if (id != undefined) {
             getMembership('id', id!.toString())
                 .then(response => {
-                    setFormData({ ...response.data.data.rows[0] });
+                    const row = getApiFirstRow(response);
+                    if (row) setFormData({ ...row });
                 })
                 .catch(error => {
                     console.error('API call failed:', error);

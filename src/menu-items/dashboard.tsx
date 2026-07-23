@@ -49,11 +49,21 @@ export const DashboardMenu = () => {
     return menuList(subList);
   });
 
+  if (!menuDashboard?.title) {
+    return {
+      id: 'group-dashboard',
+      title: <FormattedMessage id="dashboard" />,
+      type: 'group',
+      icon: icons.dashboardOutlined,
+      children: ChildrenList || []
+    } as NavItemType;
+  }
+
   const dashboardList: NavItemType = {
     ...menuDashboard,
     title: <FormattedMessage id={`${menuDashboard.title}`} />,
     // @ts-ignore
-    icon: icons[menuDashboard.icon],
+    icon: icons[menuDashboard.icon] || icons.dashboardOutlined,
     children: ChildrenList
   };
 

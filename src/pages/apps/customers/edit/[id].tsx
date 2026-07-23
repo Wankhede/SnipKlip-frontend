@@ -11,6 +11,7 @@ import { openSnackbar } from 'store/reducers/snackbar';
 // Services
 import { getCustomer } from 'services/customers';
 import AddCustomer from '../add-customer';
+import { getApiFirstRow } from 'utils/api-list';
 
 
 function EditCustomer() {
@@ -34,9 +35,10 @@ function EditCustomer() {
     useEffect(() => {
         getCustomer('id', id!.toString())
             .then(response => {
-                setApiResponse({ ...response.data.data.rows[0] });
+                const row = getApiFirstRow(response);
+                if (row) setApiResponse({ ...row });
 
-                var snackbarType = response.data.status ? 'success' : 'error';
+                var snackbarType = response.data.status === 200 ? 'success' : 'error';
 
                 showSnackbar(true, response.data.message, 'alert', snackbarType, false);
             })

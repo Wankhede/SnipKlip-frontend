@@ -2,7 +2,7 @@
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { getSalonDetails } from 'services/salon';
-import { EssentialMethods } from 'utils/essentialMethods';
+import { getApiFirstRow } from 'utils/api-list';
 
 const initialFormValues = {
   id: 0,
@@ -30,10 +30,16 @@ const useBranch = () => {
 
     const fetchSalonData = async () => {
       try {
-        const user_id = session?.token.user.data.user_id
+        const user_id = session?.token?.user?.data?.user_id;
+        if (user_id == null) return;
         const response = await getSalonDetails(user_id);
-        if (response.data) {
-          setFormData(response.data.data.rows[0]);
+        const row = getApiFirstRow<typeof initialFormValues>(response);
+        if (row) {
+          setFormData({
+            ...initialFormValues,
+            ...row,
+            salon: row.salon || initialFormValues.salon
+          });
         }
       } catch (error) {
         // Handle any error that occurs during the data fetch
@@ -44,7 +50,7 @@ const useBranch = () => {
     // Step 3: Use useEffect to fetch data when the component mounts
     useEffect(() => {
       fetchSalonData();
-    }, []);
+    }, [session?.token?.user?.data?.user_id]);
 
 
   if (session) {

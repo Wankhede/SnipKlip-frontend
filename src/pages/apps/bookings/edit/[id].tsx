@@ -11,6 +11,7 @@ import { openSnackbar } from 'store/reducers/snackbar';
 // Services
 import { getBooking } from 'services/bookings';
 import AddBookingPlan from '../add-bookings';
+import { getApiFirstRow } from 'utils/api-list';
 
 
 function EditBooking() {
@@ -34,8 +35,9 @@ function EditBooking() {
     useEffect(() => {
         getBooking('id', id!.toString())
             .then(response => {
-                setApiResponse({ ...response.data.data.rows[0] });
-                var snackbarType = response.data.status ? 'success' : 'error';
+                const row = getApiFirstRow(response);
+                if (row) setApiResponse({ ...row });
+                var snackbarType = response.data.status === 200 ? 'success' : 'error';
 
                 showSnackbar(true, response.data.message, 'alert', snackbarType, false);
             })

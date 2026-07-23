@@ -5,6 +5,9 @@ import { clearAccessToken, setAccessToken } from 'utils/axios';
 
 const UserContext = createContext();
 
+const DEFAULT_SALON_ID = Number(process.env.NEXT_PUBLIC_DEFAULT_SALON_ID || 3);
+const DEFAULT_BRANCH_ID = Number(process.env.NEXT_PUBLIC_DEFAULT_BRANCH_ID || 1);
+
 const initialFormValues = {
     user_id: undefined,
     salon_id: undefined,
@@ -12,6 +15,14 @@ const initialFormValues = {
     subscription_name: undefined,
     group: undefined,
     current_page: undefined
+};
+
+/** Admin accounts often return -1/-1; resolve to a real tenant for list APIs. */
+const normalizeTenantIds = (data = {}) => {
+    const next = { ...data };
+    if (Number(next.salon_id) < 0) next.salon_id = DEFAULT_SALON_ID;
+    if (Number(next.branch_id) < 0) next.branch_id = DEFAULT_BRANCH_ID;
+    return next;
 };
 
 const UserProvider = ({ children }) => {
@@ -40,9 +51,10 @@ const UserProvider = ({ children }) => {
             };
             const response = await getUserDetails(user_details);
             if (response.data.status === 200) {
-                setLocalStorage(response.data.data);
+                const normalized = normalizeTenantIds(response.data.data);
+                setLocalStorage(normalized);
                 const updatedUserData = {
-                    ...response.data.data,
+                    ...normalized,
                     current_page: window.localStorage.getItem('current_page')
                 };
                 setUserData(updatedUserData);

@@ -12,6 +12,7 @@ import { openSnackbar } from 'store/reducers/snackbar';
 
 // Services
 import { getExpense } from 'services/expenses';
+import { getApiFirstRow } from 'utils/api-list';
 
 function ViewExpense() {
     const [apiResponse, setApiResponse] = useState(null);
@@ -34,9 +35,10 @@ function ViewExpense() {
     useEffect(() => {
         getExpense('id', id!.toString())
             .then(response => {
-                setApiResponse({ ...response.data.data.rows[0] });
+                const row = getApiFirstRow(response);
+                if (row) setApiResponse({ ...row });
 
-                var snackbarType = response.data.status ? 'success' : 'error';
+                var snackbarType = response.data.status === 200 ? 'success' : 'error';
 
                 showSnackbar(true, response.data.message, 'alert', snackbarType, false);
             })

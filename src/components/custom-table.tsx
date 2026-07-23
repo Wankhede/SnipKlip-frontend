@@ -36,6 +36,7 @@ import _ from 'lodash';
 import { useUserProfile } from 'pages/apps/user-provider';
 import formatDate from 'utils/date-format';
 import { prependUniqueRow } from 'utils/table-state';
+import { getApiListData } from 'utils/api-list';
 
 export const Error404 = '/assets/images/error404.png/'
 
@@ -264,16 +265,30 @@ function CustomTable({ columns, paginationData, getTableRows, addButton, bulkUpl
 		setLoading(true);
 		if (!loading) {
 			(async () => {
-				const response = await getTableRows({
-					page_number: state.pageIndex.toString(), page_size: state.pageSize.toString(), search_value: getFilterValue(state, globalFilterValue),
-					search_columns: getFilterColumn(state, searchColumns.toString(), globalFilterValue), sort_by: 'ASC'
-				})
-				if (response && response.data.status && response.data.data.count > 0) {
-					setRowDetails(response.data.data.rows)
-					setRowCount(response.data.data.count)
+				try {
+					const response = await getTableRows({
+						page_number: state.pageIndex.toString(),
+						page_size: state.pageSize.toString(),
+						search_value: getFilterValue(state, globalFilterValue),
+						search_columns: getFilterColumn(state, searchColumns.toString(), globalFilterValue),
+						sort_by: 'ASC'
+					});
+					const list = getApiListData(response);
+					if (list) {
+						setRowDetails(list.rows);
+						setRowCount(list.count);
+					} else {
+						setRowDetails([]);
+						setRowCount(0);
+					}
+				} catch (error) {
+					console.error('Error loading table rows:', error);
+					setRowDetails([]);
+					setRowCount(0);
+				} finally {
+					setLoading(false);
 				}
-				setLoading(false)
-			})()
+			})();
 		}
 	}, [state.pageIndex, state.pageSize, globalFilterValue, state.filters])
 

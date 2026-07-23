@@ -11,6 +11,7 @@ import AddSalary from '../add-salary';
 import { openSnackbar } from 'store/reducers/snackbar';
 
 import { getSalary } from 'services/salary';
+import { getApiFirstRow } from 'utils/api-list';
 
 
 function ViewSalary() {
@@ -34,9 +35,10 @@ function ViewSalary() {
     useEffect(() => {
         getSalary('id', id!.toString())
             .then(response => {
-                setApiResponse({ ...response.data.data.rows[0] });
+                const row = getApiFirstRow(response);
+                if (row) setApiResponse({ ...row });
 
-                var snackbarType = response.data.status ? 'success' : 'error';
+                var snackbarType = response.data.status === 200 ? 'success' : 'error';
 
                 showSnackbar(true, response.data.message, 'alert', snackbarType, false);
             })

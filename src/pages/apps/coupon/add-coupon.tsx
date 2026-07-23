@@ -28,6 +28,7 @@ import { Coupon } from 'types/coupon';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { addCoupon, editCoupon, getCoupon } from 'services/coupon';
+import { getApiFirstRow } from 'utils/api-list';
 import { EssentialMethods } from 'utils/essentialMethods';
 import { errorColor, successColor } from 'config';
 import formatDate from 'utils/date-format';
@@ -54,7 +55,8 @@ const AddCoupon = (props: any) => {
         if (id != undefined) {
             getCoupon('id', id!.toString())
                 .then(response => {
-                    setFormData({ ...response.data.data.rows[0] });
+                    const row = getApiFirstRow(response);
+                    if (row) setFormData({ ...row });
                 })
                 .catch(error => {
                     console.error('API call failed:', error);

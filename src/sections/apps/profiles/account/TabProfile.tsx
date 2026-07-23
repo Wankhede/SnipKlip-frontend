@@ -24,6 +24,7 @@ import { getSalonDetails } from 'services/salon';
 import NumberFormat from 'react-number-format';
 import useUser from 'hooks/useUser';
 import { useUserProfile } from 'pages/apps/user-provider';
+import { getApiFirstRow } from 'utils/api-list';
 
 // ==============================|| ACCOUNT PROFILE - BASIC ||============================== //
 const initialFormValues = {
@@ -59,7 +60,8 @@ const TabProfile = () => {
       const user_id = userData.user_id
       const response = await getSalonDetails(user_id);
       if (response.data.status === 200) {
-        setFormData(response.data.data.rows[0]);
+        const row = getApiFirstRow(response);
+        if (row) setFormData(row);
       }
     } catch (error) {
       console.error('Error fetching Salon data:', error);

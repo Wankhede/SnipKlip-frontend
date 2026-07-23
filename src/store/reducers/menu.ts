@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'utils/axios';
+import { axiosServicesFrontend } from 'utils/axios';
 
 // types
 import { MenuProps } from 'types/menu';
@@ -19,7 +19,8 @@ const initialState: MenuProps = {
 
 export const fetchDashboard = createAsyncThunk('menu/fetchDashboard', async (_, { rejectWithValue }) => {
   try {
-    const response = await axios.get('/api/v3/dashboard');
+    // Menu nav tree lives on the Next.js BFF — not Django /api/v3/dashboard (metrics).
+    const response = await axiosServicesFrontend.get('/api/auth/dashboard');
     return response.data;
   } catch (error) {
     return rejectWithValue(error);
