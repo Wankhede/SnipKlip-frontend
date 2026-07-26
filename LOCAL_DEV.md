@@ -1,52 +1,49 @@
 # Local two-repository development
 
-The browser never connects directly to the database:
+Reserved ports:
 
 ```text
-Browser :8081 → Next.js / NextAuth → Django API :8000 → SQLite or PostgreSQL
+Browser → Next.js :8083 → Django API :8082 → SQLite
 ```
 
-## Terminal 1 — Django
+## Recommended: single-click from the backend repo
+
+Clone both repos as siblings, then from **SnipKlip** (backend):
+
+**Windows**
+
+```powershell
+.\run-local.bat
+```
+
+**macOS / Linux**
 
 ```bash
-cd ../SnipKlip
-source ../.venv/bin/activate
-./scripts/run_local.sh
+./run-local.sh
 ```
 
-Backend environment:
+Full instructions: [`SETUP_GUIDE.md`](../SnipKlip/SETUP_GUIDE.md) in the backend repo (or open it after cloning `SnipKlip`).
 
-```dotenv
-FRONTEND_LINK=http://localhost:8081
-CORS_ALLOWED_ORIGINS=http://localhost:8081,http://127.0.0.1:8081
-```
-
-## Terminal 2 — Next.js
+## Manual frontend-only
 
 ```bash
-cd ../snipklip-frontend
 cp .env.example .env.local
-# Replace both placeholder auth secrets with newly generated local values.
-./scripts/run_local.sh
+# set NEXTAUTH_SECRET + JWT_SECRET
+npm install --legacy-peer-deps
+npm run dev   # serves on :8083
 ```
 
-Frontend environment:
+If host Node is not 18:
 
-```dotenv
-NEXT_PUBLIC_BACKEND_URL=http://127.0.0.1:8000/
-NEXT_PUBLIC_FRONTEND_URL=http://localhost:8081/
-NEXTAUTH_URL=http://localhost:8081/
+```bash
+npx --yes --package=node@18.20.8 node node_modules/next/dist/bin/next dev -p 8083
 ```
 
 ## Health check
 
-With both servers running:
+| URL | Expected |
+|-----|----------|
+| http://127.0.0.1:8082/api/schema/ | 200 |
+| http://localhost:8083/login | 200 |
 
-```bash
-./scripts/check_local.sh
-```
-
-New salon users register at <http://localhost:8081/register>. The Django
-database stores their user and salon records; the frontend receives a Django
-JWT through NextAuth at login. A salon with no branch is redirected to salon
-onboarding.
+Register a salon at http://localhost:8083/register.
