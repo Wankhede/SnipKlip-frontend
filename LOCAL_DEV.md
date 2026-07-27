@@ -6,21 +6,15 @@ Reserved ports:
 Browser → Next.js :8083 → Django API :8082 → SQLite
 ```
 
-## Recommended: single-click from the backend repo
+## Recommended: one command from the backend repo
 
 Clone both repos as siblings, then from **SnipKlip** (backend):
 
-**Windows**
-
-```powershell
-.\run-local.bat
-```
-
-**macOS / Linux**
-
 ```bash
-./run-local.sh
+node run-local.js
 ```
+
+Same on Windows, macOS, and Linux. In **Cursor / VS Code**: `Terminal` → `Run Task…` → **SnipKlip: Start**.
 
 Full instructions: [`SETUP_GUIDE.md`](../SnipKlip/SETUP_GUIDE.md) in the backend repo (or open it after cloning `SnipKlip`).
 
