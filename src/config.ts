@@ -12,8 +12,8 @@ export const APP_ADMIN_DEFAULT_PATH = '/apps/subscription/account/subscriptions'
 export const HORIZONTAL_MAX_ITEM = 6;
 export const DRAWER_WIDTH = 260;
 
-export const backendBaseURLPath = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:8082/';
-// Same-origin by default so localhost vs 127.0.0.1 does not trigger CORS on menu APIs.
+export const backendBaseURLPath = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8082/';
+// Same-origin by default so localhost hostname mismatches do not trigger CORS on menu APIs.
 export const frontendBaseURLPath = process.env.NEXT_PUBLIC_FRONTEND_URL || '/';
 export const logoDark = BRAND.LOGO_DARK;
 export const logo = BRAND.LOGO;

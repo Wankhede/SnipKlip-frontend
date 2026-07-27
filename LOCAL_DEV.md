@@ -43,7 +43,7 @@ npx --yes --package=node@18.20.8 node node_modules/next/dist/bin/next dev -p 808
 
 | URL | Expected |
 |-----|----------|
-| http://127.0.0.1:8082/api/schema/ | 200 |
+| http://localhost:8082/api/schema/ | 200 |
 | http://localhost:8083/login | 200 |
 
 Register a salon at http://localhost:8083/register.
