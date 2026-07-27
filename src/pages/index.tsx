@@ -21,8 +21,8 @@ HomePage.getLayout = function getLayout(page: ReactElement) {
 
 
 export async function getServerSideProps(context: NextPageContext) {
-  const providers = await getProviders();
-  const csrfToken = await getCsrfToken(context);
+  const providers = (await getProviders()) || null;
+  const csrfToken = (await getCsrfToken(context)) || null;
 
   return {
     props: { providers, csrfToken }
